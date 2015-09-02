@@ -27,6 +27,38 @@ def calcMaxIndex( dictList ):
 		maxIndexes.append( (len(dic) - 1) if int(sys.argv[2]) > len(dic) else int(sys.argv[2]) )
 	return maxIndexes
 
+# prints out a table using those given variables:
+# dic - the dictionary that contains the data
+# groupKey - the movie keys that identifies each movie to display
+# title - the title of the table
+def printTable( dic, groupKey, title ):
+	# prints out the title of the given dictionary
+	print( '\n%s Best Movies:\n' % title )
+
+	# finds what is the max title length
+	maxTitleLen = -1
+	for key in groupKey:
+		if len(movieDict[key][0]) > maxTitleLen:
+			maxTitleLen = len(movieDict[key][0])
+
+	# prints the table header
+	print('{rank:{rankLen}s}  {title:{titleLen}s} {rat:s} {vot:s}'.format( 
+			rank = 'Ranking', title = 'Movie', rat = 'Rating', vot = 'Votes', 
+					rankLen = 7, titleLen = maxTitleLen ))
+
+	# prints the dividing lines between header and data
+	print('{rank:{rankLen}s}  {title:{titleLen}s} {ratVot:s}'.format( 
+		rank = '-------', title = '-'*maxTitleLen, ratVot = '------ -----', 
+				rankLen = 7, titleLen = maxTitleLen ))
+
+	# prints the table data
+	for i, key in enumerate(groupKey, start = 1):
+		print('{position:7d}  {title:{titleLen}s} {rating:3.2f} {votes:7d}'
+			.format( position = i, title = movieDict[key][0], 
+				rating = round(dic[key][2], 2), votes = dic[key][1], 
+				titleLen = maxTitleLen ))
+
+
 ## Script:
 # the first argument is always the called script, so the number of given 
 # arguments must be exactly 3:
@@ -101,45 +133,9 @@ if len(sys.argv) == 3:
 		# 2) Movie - The movie title
 		# 3) Avg Rating - The average rating
 		# 4) Votes - The number of votes received by the movie
-		print('\nMale Best Movies:\n')
-		maxTitleLen = -1
-		for key in maleMovieKey:
-			if len(movieDict[key][0]) > maxTitleLen:
-				maxTitleLen = len(movieDict[key][0])
+		printTable( maleMovies, maleMovieKey, 'Male' )
+		printTable( femaleMovies, femaleMovieKey, 'Female' )
 
-		print('{rank:{rankLen}s}  {title:{titleLen}s} {rat:s} {vot:s}'.format( 
-			rank = 'Ranking', title = 'Movie', rat = 'Rating', vot = 'Votes', 
-					rankLen = 7, titleLen = maxTitleLen ))
-		# prints out dividing lines between
-		print('{rank:{rankLen}s}  {title:{titleLen}s} {ratVot:s}'.format( 
-			rank = '-------', title = '-'*maxTitleLen, ratVot = '------ -----', 
-					rankLen = 7, titleLen = maxTitleLen ))
-
-		for i, key in enumerate(maleMovieKey, start = 1):
-			print('{position:7d}  {title:{titleLen}s} {rating:3.2f} {votes:7d}'
-				.format( position = i, title = movieDict[key][0], 
-					rating = round(maleMovies[key][2], 2), votes = maleMovies[key][1], 
-					titleLen = maxTitleLen ))
-
-		print('\nFemale Best Movies:\n') 
-		maxTitleLen = -1
-		for key in femaleMovieKey:
-			if len(movieDict[key][0]) > maxTitleLen:
-				maxTitleLen = len(movieDict[key][0])
-
-		print('{rank:{rankLen}s}  {title:{titleLen}s} {rat:s} {vot:s}'.format( 
-			rank = 'Ranking', title = 'Movie', rat = 'Rating', vot = 'Votes', 
-					rankLen = 7, titleLen = maxTitleLen ))
-		# prints out dividing lines between
-		print('{rank:{rankLen}s}  {title:{titleLen}s} {ratVot:s}'.format( 
-			rank = '-------', title = '-'*maxTitleLen, ratVot = '------ -----', 
-					rankLen = 7, titleLen = maxTitleLen ))
-
-		for i, key in enumerate(femaleMovieKey, start = 1):
-			print('{position:7d}  {title:{titleLen}s} {rating:3.2f} {votes:7d}'
-				.format( position = i, title = movieDict[key][0], 
-					rating = round(femaleMovies[key][2], 2), votes = femaleMovies[key][1], 
-					titleLen = maxTitleLen ))
 
 	# if the user selected the age grouping variable
 	elif( sys.argv[1] == 'agegroup' or sys.argv[1] == 'age' ):
@@ -196,36 +192,14 @@ if len(sys.argv) == 3:
 		# 2) Movie - The movie title
 		# 3) Avg Rating - The average rating
 		# 4) Votes - The number of votes received by the movie
-		print('Under 18 Best Movies:') 
-		print('Ranking\tMovie\t\t\t\t\t\t\t\tAvg Rating\tVotes')
-		for i, key in enumerate(_1MoviesKey, start = 1):
-			print( '%s\t%s\t\t\t\t\t\t\t\t%.2f\t%s' % ( i, movieDict[key][0], round(_1Movies[key][2], 2), _1Movies[key][1] ))
-
-		print('\n18-24 Best Movies:') 
-		print('Ranking\tMovie\t\t\t\t\t\t\t\tAvg Rating\tVotes')
-		for i, key in enumerate(_18MoviesKey, start = 1):
-			print( '%s\t%s\t\t\t\t\t\t\t\t%.2f\t %s' % ( i, movieDict[key][0], round(_18Movies[key][2], 2), _18Movies[key][1] ))
-
-		print('\n25-34 Best Movies:') 
-		print('Ranking\tMovie\t\t\t\t\t\t\t\tAvg Rating\tVotes')
-		for i, key in enumerate(_25MoviesKey, start = 1):
-			print( '%s\t%s\t\t\t\t\t\t\t\t%.2f\t %s' % ( i, movieDict[key][0], round(_25Movies[key][2], 2), _25Movies[key][1] ))
-
-		print('\n35-44 Best Movies:') 
-		print('Ranking\tMovie\t\t\t\t\t\t\t\tAvg Rating\tVotes')
-		for i, key in enumerate(_35MoviesKey, start = 1):
-			print( '%s\t%s\t\t\t\t\t\t\t\t%.2f\t %s' % ( i, movieDict[key][0], round(_35Movies[key][2], 2), _35Movies[key][1] ))
-
-		print('\n45-49 Best Movies:') 
-		print('Ranking\tMovie\t\t\t\t\t\t\t\tAvg Rating\tVotes')
-		for i, key in enumerate(_45MoviesKey, start = 1):
-			print( '%s\t%s\t\t\t\t\t\t\t\t%.2f\t %s' % ( i, movieDict[key][0], round(_45Movies[key][2], 2), _45Movies[key][1] ))
-
-		print('\n50-55 Best Movies:') 
-		print('Ranking\tMovie\t\t\t\t\t\t\t\tAvg Rating\tVotes')
-		for i, key in enumerate(_55MoviesKey, start = 1):
-			print( '%s\t%s\t\t\t\t\t\t\t\t%.2f\t %s' % ( i, movieDict[key][0], round(_55Movies[key][2], 2), _55Movies[key][1] ))
-
+		printTable(_1Movies, _1MoviesKey, 'Under 18')
+		printTable(_18Movies, _18MoviesKey, '18-24')
+		printTable(_25Movies, _25MoviesKey, '25-34')
+		printTable(_35Movies, _35MoviesKey, '35-44')
+		printTable(_45Movies, _45MoviesKey, '45-49')
+		printTable(_50Movies, _50MoviesKey, '50-55')
+		printTable(_56Movies, _56MoviesKey, '56+')
+		
 # if the arguments given in input are not 3 the script will stop.
 else:
 	sys.exit('You haven\'t provided the correct number of arguments (2)')
