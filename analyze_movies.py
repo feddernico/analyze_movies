@@ -2,6 +2,9 @@ import csv
 import os
 import sys
 
+# finds out what is the current data directory.
+datDir = os.path.dirname(os.path.realpath(__file__)) + '/data'
+
 ## Functions:
 # adds a rating for a given movie inside a given movie dictionary.
 def addMovieRate( movieDict, key, rating ):
@@ -101,104 +104,50 @@ if len(sys.argv) == 3:
 
 	# if the user selected the gender grouping variable
 	if sys.argv[1] == 'gender':
-		# creates two movie dictionaries - one per gender - that has MovieID as key and as variables:
-		# 0) The sum of ratings;
-		# 1) The number of users that rated that movie;
-		# 2) The average calculated as: sum_of_ratings/num_users_rated.
-		maleMovies = {}
-		femaleMovies = {}
 
-		# loops over the rating dictionary.
-		for key, val in ratingDict.items():
-			# gets the current rating and converts it to an integer value.
-			rating = int(ratingDict[(key[0], key[1])][0])
-
-			# if the user is a Male
-			if usersDict[key[0]][0] == 'M':
-				addMovieRate(maleMovies, key[1], rating)
-			# else, if the user is a Female
-			else:
-				addMovieRate(femaleMovies, key[1], rating)
-
-		# calculates the dictionary maximum index available per gender group
-		maxIndexes = calcMaxIndex([maleMovies, femaleMovies])
-
-		# returns the first n keys of the best rated movies for males and females.
-		# When movies have the same rating, they are ordered by number of votes received
-		maleMovieKey = sorted(maleMovies.keys(), key=lambda x: (maleMovies[x][2], maleMovies[x][1]), reverse=True)[0:maxIndexes[0]]
-		femaleMovieKey = sorted(femaleMovies.keys(), key=lambda x: (femaleMovies[x][2], femaleMovies[x][1]), reverse=True)[0:maxIndexes[1]]
-
-		# prints out the ranking splitted by gender. The report is composed by:
-		# 1) Ranking
-		# 2) Movie - The movie title
-		# 3) Avg Rating - The average rating
-		# 4) Votes - The number of votes received by the movie
-		printTable( maleMovies, maleMovieKey, 'Male' )
-		printTable( femaleMovies, femaleMovieKey, 'Female' )
-
+		# sets correctly the group values, the group value position inside the user dictionary,
+		# the groups description and the groups data
+		groupValues = ['M', 'F']
+		groupValuePos = 0
+		groupDesc = ['Male', 'Female']
+		groups = [{} for _ in range(len(groupValues))]
 
 	# if the user selected the age grouping variable
 	elif( sys.argv[1] == 'agegroup' or sys.argv[1] == 'age' ):
 
-		# creates seven movie dictionaries - one per age group - that 
-		# has MovieID as key and as variables:
-		# 0) The sum of ratings;
-		# 1) The number of users that rated that movie;
-		# 2) The average calculated as: sum_of_ratings/num_users_rated.
-		_1Movies = {}
-		_18Movies = {}
-		_25Movies = {}
-		_35Movies = {}
-		_45Movies = {}
-		_50Movies = {}
-		_56Movies = {}
+		# sets correctly the group values, the group value position inside the user dictionary,
+		# the groups description and the groups data
+		groupValues = ['1', '18', '25', '35', '45', '50', '56']
+		groupValuePos = 1
+		groupDesc = ['Under 18', '18-24', '25-34', '35-44', '45-49', '50-55', '56+']
+		groups = [{} for _ in range(len(groupValues))]
 
-		# loops over the rating dictionary.
-		for key, val in ratingDict.items():
-			# gets the current rating and converts it to an integer value.
-			rating = int(ratingDict[(key[0], key[1])][0])
+	# loops over the rating dictionary.
+	for key, val in ratingDict.items():
+		# gets the current rating and converts it to an integer value.
+		rating = int(ratingDict[(key[0], key[1])][0])
 
-			# for each age group inside the usersDict
-			if usersDict[key[0]][1] == '1':
-				addMovieRate(_1Movies, key[1], rating)
-			elif usersDict[key[0]][1] == '18':
-				addMovieRate(_18Movies, key[1], rating)
-			elif usersDict[key[0]][1] == '25':
-				addMovieRate(_25Movies, key[1], rating)
-			elif usersDict[key[0]][1] == '35':
-				addMovieRate(_35Movies, key[1], rating)
-			elif usersDict[key[0]][1] == '45':
-				addMovieRate(_45Movies, key[1], rating)
-			elif usersDict[key[0]][1] == '50':
-				addMovieRate(_50Movies, key[1], rating)
-			elif usersDict[key[0]][1] == '56':
-				addMovieRate(_56Movies, key[1], rating)
-		
-		# calculates the dictionary maximum index available per gender group
-		maxIndexes = calcMaxIndex([ _1Movies, _18Movies, _25Movies, _35Movies, _45Movies, _50Movies, _56Movies ])
+		# for each age group inside the usersDict adds the correct movie rating		
+		for i, val in enumerate(groupValues, start = 0):
+			if usersDict[key[0]][groupValuePos] == val:
+				addMovieRate(groups[i], key[1], rating)
+	
+	# calculates the dictionary maximum index available per gender group
+	maxIndexes = calcMaxIndex(groups)
 
-		# returns the first n keys of the best rated movies for each age group.
-		# When movies have the same rating, they are ordered by number of votes received
-		_1MoviesKey = sorted(_1Movies.keys(), key=lambda x: (_1Movies[x][2], _1Movies[x][1]), reverse = True)[0:maxIndexes[0]]
-		_18MoviesKey = sorted(_18Movies.keys(), key=lambda x: (_18Movies[x][2], _18Movies[x][1]), reverse = True)[0:maxIndexes[1]]
-		_25MoviesKey = sorted(_25Movies.keys(), key=lambda x: (_25Movies[x][2], _25Movies[x][1]), reverse = True)[0:maxIndexes[2]]
-		_35MoviesKey = sorted(_35Movies.keys(), key=lambda x: (_35Movies[x][2], _35Movies[x][1]), reverse = True)[0:maxIndexes[3]]
-		_45MoviesKey = sorted(_45Movies.keys(), key=lambda x: (_45Movies[x][2], _45Movies[x][1]), reverse = True)[0:maxIndexes[4]]
-		_50MoviesKey = sorted(_50Movies.keys(), key=lambda x: (_50Movies[x][2], _50Movies[x][1]), reverse = True)[0:maxIndexes[5]]
-		_56MoviesKey = sorted(_56Movies.keys(), key=lambda x: (_56Movies[x][2], _56Movies[x][1]), reverse = True)[0:maxIndexes[6]]
+	# returns the first n keys of the best rated movies for each age group.
+	# When movies have the same rating, they are ordered by number of votes received
+	moviesKey = [[] for _ in range( len(groupValues) )]
+	for i, val in enumerate(groups, start = 0):
+		moviesKey[i] = sorted(val.keys(), key=lambda x: (val[x][2], val[x][1]), reverse = True)[0:maxIndexes[i]]
 
-		# prints out the ranking splitted by age group. The report is composed by:
-		# 1) Ranking
-		# 2) Movie - The movie title
-		# 3) Avg Rating - The average rating
-		# 4) Votes - The number of votes received by the movie
-		printTable(_1Movies, _1MoviesKey, 'Under 18')
-		printTable(_18Movies, _18MoviesKey, '18-24')
-		printTable(_25Movies, _25MoviesKey, '25-34')
-		printTable(_35Movies, _35MoviesKey, '35-44')
-		printTable(_45Movies, _45MoviesKey, '45-49')
-		printTable(_50Movies, _50MoviesKey, '50-55')
-		printTable(_56Movies, _56MoviesKey, '56+')
+	# prints out the ranking splitted by age group. The report is composed by:
+	# 1) Ranking
+	# 2) Movie - The movie title
+	# 3) Avg Rating - The average rating
+	# 4) Votes - The number of votes received by the movie
+	for i in range( len(groupValues) ):
+		printTable(groups[i], moviesKey[i], groupDesc[i])
 		
 # if the arguments given in input are not 3 the script will stop.
 else:
