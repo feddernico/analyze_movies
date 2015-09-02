@@ -2,9 +2,6 @@ import csv
 import os
 import sys
 
-# finds out what is the current data directory.
-datDir = os.path.dirname(os.path.realpath(__file__)) + '/data'
-
 ## Functions:
 # adds a rating for a given movie inside a given movie dictionary.
 def addMovieRate( movieDict, key, rating ):
