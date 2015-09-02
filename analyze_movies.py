@@ -42,18 +42,18 @@ def printTable( dic, groupKey, title ):
 			maxTitleLen = len(movieDict[key][0])
 
 	# prints the table header
-	print('{rank:{rankLen}s}  {title:{titleLen}s} {rat:s} {vot:s}'.format( 
+	print('{rank:{rankLen}s} {title:{titleLen}s} {rat:s} {vot:s}'.format( 
 			rank = 'Ranking', title = 'Movie', rat = 'Rating', vot = 'Votes', 
 					rankLen = 7, titleLen = maxTitleLen ))
 
 	# prints the dividing lines between header and data
-	print('{rank:{rankLen}s}  {title:{titleLen}s} {ratVot:s}'.format( 
+	print('{rank:{rankLen}s} {title:{titleLen}s} {ratVot:s}'.format( 
 		rank = '-------', title = '-'*maxTitleLen, ratVot = '------ -----', 
 				rankLen = 7, titleLen = maxTitleLen ))
 
 	# prints the table data
 	for i, key in enumerate(groupKey, start = 1):
-		print('{position:7d}  {title:{titleLen}s} {rating:3.2f} {votes:7d}'
+		print('{position:7d} {title:{titleLen}s} {rating:3.2f} {votes:7d}'
 			.format( position = i, title = movieDict[key][0], 
 				rating = round(dic[key][2], 2), votes = dic[key][1], 
 				titleLen = maxTitleLen ))
